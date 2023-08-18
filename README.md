@@ -88,8 +88,7 @@ HBNB_ENV=test HBNB_MYSQL_USER=hbnb_test HBNB_MYSQL_PWD=hbnb_test_pwd HBNB_MYSQL_
 
 ## Contributors
 
-- Original authors: [Original Author 1](https://github.com/original_author_1) and [Original Author 2](https://github.com/original_author_2)
-- Your Name: [Your GitHub Profile](https://github.com/your_username)
+- Original authors: [Faith Ampwera](https://github.com/Fayth7) and [Nicholas Otieno Odhiambo](https://github.com/Nicholas2023)
 
 ## License
 
