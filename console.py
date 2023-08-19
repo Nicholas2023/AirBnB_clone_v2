@@ -150,6 +150,11 @@ class HBNBCommand(cmd.Cmd):
                     value = float(value)
                 except ValueError:
                     continue
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
 
             """
             Check if the attr exists in the class and set it
