@@ -114,17 +114,49 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
-        if not args:
-            print("** class name missing **")
-            return
-        elif args not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
-        print(new_instance.id)
-        storage.save()
+    """Create an object of any class with parameters"""
+    if not args:
+        print("** class name missing **")
+        return
+
+    parts = args.split()
+    class_name = parts[0]
+    if class_name not in HBNBCommand.classes:
+        print("** class doesn't exist **")
+        return
+
+    new_instance = HBNBCommand.classes[class_name]()
+
+    # Process parameters
+    param_string = " ".join(parts[1:])
+    param_pairs = param_string.split()
+    for param_pair in param_pairs:
+        param_parts = param_pair.split('=')
+        if len(param_parts) != 2:
+            continue
+
+        param_key = param_parts[0]
+        param_value = param_parts[1]
+
+        # Replace underscores with spaces in the value
+        param_value = param_value.replace('_', ' ')
+
+        # Handle different value types
+        if param_value.startswith('"') and param_value.endswith('"'):
+            param_value = param_value[1:-1]  # Remove the double quotes
+        elif '.' in param_value:
+            param_value = float(param_value)
+        else:
+            try:
+                param_value = int(param_value)
+            except ValueError:
+                pass  # Skip if not a valid int
+
+        setattr(new_instance, param_key, param_value)
+
+    new_instance.save()
+    print(new_instance.id)
+
 
     def help_create(self):
         """ Help information for the create method """
