@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import os
 import re
 from models.base_model import BaseModel
 from models.__init__ import storage
