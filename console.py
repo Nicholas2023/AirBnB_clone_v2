@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -114,49 +114,42 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """Create an object of any class with parameters"""
+        """ Create an object of any class with parameters """
         if not args:
             print("** class name missing **")
             return
 
-        parts = args.split()
-        class_name = parts[0]
+        args_list = args.split(' ')
+        class_name = args_list[0]
+
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-    new_instance = HBNBCommand.classes[class_name]()
+        new_instance = HBNBCommand.classes[class_name]()
 
-    # Process parameters
-    param_string = " ".join(parts[1:])
-    param_pairs = param_string.split()
-    for param_pair in param_pairs:
-        param_parts = param_pair.split('=')
-        if len(param_parts) != 2:
-            continue
+        """
+        Parse and set the attributes based on parameters
+        """
+        for param in args_list[1:]:
+            key_val = args.split('=')
 
-        param_key = param_parts[0]
-        param_value = param_parts[1]
+            if len(key_val) == 2:
+                key, value = key_val
+                """
+                Check if the attribute exists in the class and set it
+                """
+                if hasattr(new_instance, key):
+                    attr_type = type(getattr(new_instance, key))
+                    if attr_type in HBNBCommand.types:
+                        value = HBNBCommand.types[attr_type](value)
+                    setattr(new_instance, key, value)
 
-        # Replace underscores with spaces in the value
-        param_value = param_value.replace('_', ' ')
-
-        # Handle different value types
-        if param_value.startswith('"') and param_value.endswith('"'):
-            param_value = param_value[1:-1]  # Remove the double quotes
-        elif '.' in param_value:
-            param_value = float(param_value)
-        else:
-            try:
-                param_value = int(param_value)
-            except ValueError:
-                pass  # Skip if not a valid int
-
-        setattr(new_instance, param_key, param_value)
-
-    new_instance.save()
-    print(new_instance.id)
-
+        """
+        Save the new instance after setting the attributes
+        """
+        new_instance.save()
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
@@ -304,7 +297,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -312,10 +305,10 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] is not ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
-            if args[2] and args[2][0] is '\"':
+            if args[2] and args[2][0] == '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
             # if att_val was not quoted arg
@@ -351,6 +344,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
