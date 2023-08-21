@@ -12,7 +12,6 @@ from models.place import Place
 from models.review import Review
 from models.amenity import Amenity
 
-
 classes = {"Amenity": Amenity, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
 
@@ -38,15 +37,20 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """query on the current database session"""
-        new_dict = {}
-        for clss in classes:
-            if cls is None or cls is classes[clss] or cls is clss:
-                objs = self.__session.query(classes[clss]).all()
-                for obj in objs:
-                    key = obj.__class__.__name__ + '.' + obj.id
-                    new_dict[key] = obj
-        return (new_dict)
+        all_objects = {}
+
+        if cls is None:
+            # Query all types of objects
+            classes_to_query = [User, State, City, Amenity, Place, Review]
+        else:
+            classes_to_query = [cls]
+
+        for cls_to_query in classes_to_query:
+            for obj in self.__session.query(cls_to_query):
+                key = "{}.{}".format(cls_to_query.__name__, obj.id)
+                all_objects[key] = obj
+
+        return all_objects
 
     def new(self, obj):
         """add the object to the current database session"""
