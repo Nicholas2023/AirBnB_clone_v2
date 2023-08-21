@@ -42,20 +42,18 @@ class DBStorage:
     def all(self, cls=None):
         """ Query on the current database session """
         objs = {}
-        if cls:
-            query_cls = cls.__table__
-            query_result = self.__session.query(query_cls).all()
+        if cls is not None:
+            query_result = self.__session.query(cls).all()
             for obj in query_result:
                 key = "{}.{}".format(type(obj).__name__, obj.id)
                 objs[key] = obj
         else:
-            classes = [State, City, User, Place, Review, Amenity]
-            for cls in classes:
-                query_cls = cls.__table__
-                query_result = self.__session.query(query_cls).all()
-                for obj in query_result:
-                    key = "{}.{}".format(type(obj).__name__, obj.id)
-                    objs[key] = obj
+            for cls in classes.values():
+                if hasattr(cls, "__tablename__"):
+                    query_result = self.__session.query(cls).all()
+                    for obj in query_result:
+                        key = "{}.{}".format(type(obj).__name__, obj.id)
+                        objs[key] = obj
         return objs
 
     def new(self, obj):
