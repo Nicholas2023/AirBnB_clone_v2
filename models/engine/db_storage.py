@@ -1,91 +1,58 @@
-#!/usr/bin/python3
-'''database storage engine'''
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
 from os import getenv
 
-classes = {"User": User, "State": State, "City": City,
-           "Amenity": Amenity, "Place": Place, "Review": Review}
-
-
 class DBStorage:
-    '''database storage engine for mysql storage'''
     __engine = None
     __session = None
-
+    
     def __init__(self):
-        '''instantiate new dbstorage instance'''
-        HBNB_MYSQL_USER = getenv('HBNB_MYSQL_USER')
-        HBNB_MYSQL_PWD = getenv('HBNB_MYSQL_PWD')
-        HBNB_MYSQL_HOST = getenv('HBNB_MYSQL_HOST')
-        HBNB_MYSQL_DB = getenv('HBNB_MYSQL_DB')
-        HBNB_ENV = getenv('HBNB_ENV')
-        self.__engine = create_engine(
-            'mysql+mysqldb://{}:{}@{}/{}'.format(
-                                           HBNB_MYSQL_USER,
-                                           HBNB_MYSQL_PWD,
-                                           HBNB_MYSQL_HOST,
-                                           HBNB_MYSQL_DB
-                                       ), pool_pre_ping=True)
-
-        if HBNB_ENV == 'test':
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.
+                                      format(getenv('HBNB_MYSQL_USER'),
+                                             getenv('HBNB_MYSQL_PWD'),
+                                             getenv('HBNB_MYSQL_HOST'),
+                                             getenv('HBNB_MYSQL_DB')),
+                                      pool_pre_ping=True)
+        if getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
-
+    
     def all(self, cls=None):
-        """ Query on the current database session """
-        objs = {}
-        if cls is not None:
-            query_result = self.__session.query(cls).all()
-            for obj in query_result:
-                key = "{}.{}".format(type(obj).__name__, obj.id)
-                objs[key] = obj
+        from models import classes  # Import inside the function to avoid circular imports
+        session = self.__session
+        
+        objects = {}
+        if cls:
+            if type(cls) == str:
+                cls = classes.get(cls, None)
+            if cls:
+                query_result = session.query(cls).all()
+                for obj in query_result:
+                    key = "{}.{}".format(type(obj).__name__, obj.id)
+                    objects[key] = obj
         else:
-            for cls in classes.values():
-                if hasattr(cls, "__tablename__"):
-                    query_result = self.__session.query(cls).all()
-                    for obj in query_result:
-                        key = "{}.{}".format(type(obj).__name__, obj.id)
-                        objs[key] = obj
-        return objs
-
+            for name, _cls in classes.items():
+                query_result = session.query(_cls).all()
+                for obj in query_result:
+                    key = "{}.{}".format(type(obj).__name__, obj.id)
+                    objects[key] = obj
+        
+        return objects
+    
     def new(self, obj):
-        '''adds the obj to the current db session'''
-        if obj is not None:
-            try:
-                self.__session.add(obj)
-                self.__session.flush()
-                self.__session.refresh(obj)
-            except Exception as ex:
-                self.__session.rollback()
-                raise ex
-
+        if obj:
+            self.__session.add(obj)
+    
     def save(self):
-        '''commit all changes of the current db session'''
         self.__session.commit()
-
+    
     def delete(self, obj=None):
-        ''' deletes from the current databse session the obj
-            is it's not None
-        '''
-        if obj is not None:
-            self.__session.query(type(obj)).filter(
-                type(obj).id == obj.id).delete()
-
+        if obj:
+            self.__session.delete(obj)
+    
     def reload(self):
-        '''reloads the database'''
+        from models.base_model import Base
+        
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine,
-                                       expire_on_commit=False)
-        self.__session = scoped_session(session_factory)()
-
-    def close(self):
-        """closes the working SQLAlchemy session"""
-        self.__session.close()
+        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        self.__session = scoped_session(session_factory)
