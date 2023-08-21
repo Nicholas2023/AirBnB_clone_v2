@@ -3,13 +3,13 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from models.base_model import Base
-from models.user import User
-from models.state import State
-from models.city import City
 from models.amenity import Amenity
+from models.base_model import Base
+from models.city import City
 from models.place import Place
 from models.review import Review
+from models.state import State
+from models.user import User
 from os import getenv
 
 classes = {"User": User, "State": State, "City": City,
@@ -40,21 +40,20 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """ Query on the current database session """
-        objs = {}
-        if cls is not None:
-            query_result = self.__session.query(cls).all()
-            for obj in query_result:
-                key = "{}.{}".format(type(obj).__name__, obj.id)
-                objs[key] = obj
+        '''query on the current db session all cls objects'''
+        dct = {}
+        if cls is None:
+            for c in classes.values():
+                objs = self.__session.query(c).all()
+                for obj in objs:
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    dct[key] = obj
         else:
-            for cls in classes.values():
-                if hasattr(cls, "__tablename__"):
-                    query_result = self.__session.query(cls).all()
-                    for obj in query_result:
-                        key = "{}.{}".format(type(obj).__name__, obj.id)
-                        objs[key] = obj
-        return objs
+            objs = self.__session.query(cls).all()
+            for obj in objs:
+                key = obj.__class__.__name__ + '.' + obj.id
+                dct[key] = obj
+        return dct
 
     def new(self, obj):
         '''adds the obj to the current db session'''
@@ -85,11 +84,6 @@ class DBStorage:
         session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
         self.__session = scoped_session(session_factory)()
-
-    def reload(self):
-        Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        self.__session = scoped_session(session_factory)
 
     def close(self):
         """closes the working SQLAlchemy session"""
