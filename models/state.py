@@ -1,18 +1,35 @@
+#!/usr/bin/python3
+""" holds class State"""
+import models
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from os import getenv
+import sqlalchemy
+from sqlalchemy import Column, String
 
 
 class State(BaseModel, Base):
-    """Class for State"""
-    __tablename__ = 'states'  # Table name
-
-    name = Column(String(128), nullable=False)
-
-    # Add a relationship to City class (for DBStorage)
-    cities = relationship("City", back_populates="state",
-                          cascade="all, delete-orphan")
+    """Representation of state """
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        __tablename__ = 'states'
+        name = Column(String(128),
+                      nullable=False)
+        cities = relationship("City", cascade="all, delete",
+                              backref="states")
+    else:
+        name = ""
 
     def __init__(self, *args, **kwargs):
-        """Initializes State"""
+        """initializes state"""
         super().__init__(*args, **kwargs)
+
+    if getenv('HBNB_TYPE_STORAGE') != 'db':
+        @property
+        def cities(self):
+            """fs getter attribute that returns City instances"""
+            values_city = models.storage.all("City").values()
+            list_city = []
+            for city in values_city:
+                if city.state_id == self.id:
+                    list_city.append(city)
+            return list_city
