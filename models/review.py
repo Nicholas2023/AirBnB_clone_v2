@@ -8,7 +8,7 @@ from models.base_model import BaseModel, Base
 
 
 class Review(BaseModel, Base):
-    """ Review classto store review information """
+    """This class defines a review by various attributes"""
     __tablename__ = 'reviews'
     place_id = Column(
         String(60), ForeignKey('places.id'), nullable=False

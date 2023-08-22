@@ -9,6 +9,7 @@ from models.base_model import BaseModel, Base
 
 class User(BaseModel, Base):
     """This class defines a user by various attributes"""
+<<<<<<< HEAD
     __tablename__ = 'users'
     email = Column(
         String(128), nullable=False
@@ -32,3 +33,9 @@ class User(BaseModel, Base):
         cascade="all, delete, delete-orphan",
         backref='user'
     ) if os.getenv('HBNB_TYPE_STORAGE') == 'db' else None
+=======
+    email = ''
+    password = ''
+    first_name = ''
+    last_name = ''
+>>>>>>> parent of 05f933c (user.py)
