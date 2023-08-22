@@ -18,16 +18,21 @@ class State(BaseModel, Base):
     else:
         name = ""
 
+    def __init__(self, *args, **kwargs):
+        """initializes state"""
+        super().__init__(*args, **kwargs)
+
+    if storage_type != "db":
         @property
         def cities(self):
             '''returns the list of City instances with state_id
                 equals the current State.id
                 FileStorage relationship between State and City
             '''
-            from models import storage
-            related_cities = []
-            cities = storage.all(City)
-            for city in cities.values():
+	    city_list = []
+            all_cities = storage.all(City)
+            for city in all_cities.values():
                 if city.state_id == self.id:
-                    related_cities.append(city)
-            return related_cities
+                    city_list.append(city)
+            return city_list
+            
