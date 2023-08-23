@@ -60,7 +60,7 @@ This project involves enhancing an existing AirBnB clone codebase by implementin
    cd AirBnB_clone_v2
    ```
 
-3. Create a virtual environment (optional but recommended):
+3. Create a virtual environment (optional but its recommended):
    ```bash
    python3 -m venv venv
    source venv/bin/activate
