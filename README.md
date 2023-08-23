@@ -38,7 +38,7 @@ This project involves enhancing an existing AirBnB clone codebase by implementin
 - Implementing unittests to ensure code functionality and PEP8 compliance.
 - Setting up development and test databases for MySQL.
 - Integrating SQLAlchemy for improved database interactions.
-- Enhancing the storage engine to support object deletion.
+- Enhancing storage engine to support object deletion.
 - Adding classes for States, Cities, Users, and Places with proper database mappings.
 
 ## Requirements
