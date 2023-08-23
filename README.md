@@ -110,4 +110,4 @@ HBNB_ENV=test HBNB_MYSQL_USER=hbnb_test HBNB_MYSQL_PWD=hbnb_test_pwd HBNB_MYSQL_
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under [MIT License](LICENSE).
