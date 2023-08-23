@@ -55,7 +55,7 @@ This project involves enhancing an existing AirBnB clone codebase by implementin
    git clone https://github.com/your_username/AirBnB_clone_v2.git
    ```
 
-2. Navigate to the project directory:
+2. Navigate to project directory:
    ```bash
    cd AirBnB_clone_v2
    ```
