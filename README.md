@@ -34,7 +34,7 @@ This is a Python project that aims to create an improved version of an AirBnB cl
 
 This project involves enhancing an existing AirBnB clone codebase by implementing new features and utilizing MySQL as the database storage engine. It includes:
 
-- Updating the command-line interface to allow object creation with given parameters.
+- Updating command-line interface to allow object creation with given parameters.
 - Implementing unittests to ensure code functionality and PEP8 compliance.
 - Setting up development and test databases for MySQL.
 - Integrating SQLAlchemy for improved database interactions.
