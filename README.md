@@ -98,7 +98,7 @@ This project involves enhancing an existing AirBnB clone codebase by implementin
 
 ## Tests
 
-To run the unittests and ensure code functionality and PEP8 compliance, use the following command:
+To run the unittests & ensure code functionality and PEP8 compliance, use the following command:
 
 ```bash
 HBNB_ENV=test HBNB_MYSQL_USER=hbnb_test HBNB_MYSQL_PWD=hbnb_test_pwd HBNB_MYSQL_HOST=localhost HBNB_MYSQL_DB=hbnb_test_db HBNB_TYPE_STORAGE=db python3 -m unittest discover tests
