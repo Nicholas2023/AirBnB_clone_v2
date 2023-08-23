@@ -1,6 +1,6 @@
 # AirBnB Clone v2 :smile:
 
-This is a Python project that aims to create an improved version of an AirBnB clone using MySQL as the database storage engine. The project involves implementing various features, improving the command-line interface, and utilizing SQLAlchemy for database interactions.
+This is a Python project that aims to create an improved version of an AirBnB clone using MySQL as the database storage engine. The project involves the implementing of various features, improving the command-line interface, and utilizing SQLAlchemy for database interactions.
 
 ## Table of Contents
 
