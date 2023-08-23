@@ -75,7 +75,7 @@ This project involves enhancing an existing AirBnB clone codebase by implementin
    - Run `setup_mysql_dev.sql` and `setup_mysql_test.sql` to create the development and test databases and users.
 
 6. Configure environment variables:
-   - Set the necessary environment variables for MySQL credentials and database names.
+   - Set necessary environment variables for MySQL credentials and database names.
 
 ## Usage
 
