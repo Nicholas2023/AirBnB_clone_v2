@@ -30,9 +30,10 @@ class State(BaseModel, Base):
                 equals the current State.id
                 FileStorage relationship between State and City
             '''
-            city_list = []
-            all_cities = storage.all(City)
-            for city in all_cities.values():
+            from models import storage
+            related_cities = []
+            cities = storage.all(City)
+            for city in cities.values():
                 if city.state_id == self.id:
-                    city_list.append(city)
-            return city_list
+                    related_cities.append(city)
+            return related_cities
